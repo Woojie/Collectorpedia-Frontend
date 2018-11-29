@@ -94,6 +94,7 @@ class IndivdualItem extends Component{
             csInput3={csInput3}
             editModalClose={this.editModalClose}
             user={user}
+      
           />
         </Modal.Description>
         </Modal>

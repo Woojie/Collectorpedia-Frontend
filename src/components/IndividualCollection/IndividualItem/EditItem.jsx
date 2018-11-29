@@ -53,7 +53,8 @@ class EditItemForm extends Component {
           id: uuidv4(),
           customInput1:[this.props.csInput1, customInput1], 
           customInput2:[this.props.csInput2, customInput2],
-          customInput3:[this.props.csInput3, customInput3]
+          customInput3:[this.props.csInput3, customInput3],
+          image: this.props.image
         }]
       }
       if(oldItems.length > 0){
