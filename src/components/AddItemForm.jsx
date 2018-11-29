@@ -4,7 +4,6 @@ import {Grid, Button, Form, Input, Divider, TextArea, Label} from 'semantic-ui-r
 import uuidv4 from 'uuid/v4'
 
 
-
 class AddItemForm extends Component {
   state = {
     value: '',
@@ -52,8 +51,7 @@ class AddItemForm extends Component {
         ]
       }
       user.collections = oldCollection.concat(changeCollection)
-  
-        console.log(user)
+
       axios({
         method: 'put',
         url:'http://localhost:3030/user/',

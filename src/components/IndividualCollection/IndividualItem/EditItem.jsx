@@ -1,164 +1,190 @@
 import React, {Component} from 'react'
 import axios from 'axios';
-import {Button, Grid, Form, Input, Segment, Divider,  TextArea, Label} from 'semantic-ui-react'
+import {Grid, Button, Form, Input, Divider, TextArea, Label} from 'semantic-ui-react'
+import uuidv4 from 'uuid/v4'
 
 
-
-class EditCollectionForm extends Component {
-  state={
+class EditItemForm extends Component {
+  state = {
+    value: '',
     name: '',
-    type: '',
     description: '',
-    collectionExists: false,
-    enterName: false,
-    customInput: []
+    customInput1: '',
+    customInput2: '',
+    customInput3: '',
+    itemExists: false,
 
   }
 
   componentDidMount(){
+    let {name, description, customInput1,customInput2,customInput3, id} = this.props
 
     this.setState({
-      customInput1: this.props.customInput1,
-      customInput2: this.props.customInput2,
-      customInput3: this.props.customInput3,
-      name: this.props.name,
-      type: this.props.type,
-      description: this.props.description,
-    }, ()=>{
-      let customNumber=0
-      let customInput = [{num:1}, {num:2}, {num:3}]
-      if(this.props.customInput1 !== null){
-        customNumber =1      
-      }
-      if(this.props.customInput2 !== null){
-        customNumber = 2       
-      }
-      if(this.props.customInput3 !== null){
-        customNumber = 3
-      }
-  
-      this.setState({
-        customInput: customInput,
-        customNumber,
-
-      })
-
+      name,
+      description,
+      customInput1:customInput1[1],
+      customInput2:customInput2[1],
+      customInput3:customInput3[1],
+      id,
+      value: this.props.value
     })
 
   }
-
-  handleChange = (e) =>{
-    this.setState({[e.target.name]:e.target.value})}
-
+  handleRadioChange = (e, {value}) => this.setState({value})
+  handleChange = (e) => {this.setState({[e.target.name]:e.target.value})}
+    
   handleSubmit = (e) =>{
 
-    let user = this.props.user
-    let otherCollectionValidate = user.collections.filter((collection)=>collection.name.toLowerCase() !== this.props.name.toLowerCase())
-    let newCollections
+    let {value, name, description, customInput1, customInput2, customInput3, id} = this.state,
+    {user, collectionId} = this.props,
+    changeCollection = user.collections.find((collection)=>collection.id === collectionId),
+    oldCollection = user.collections.filter((collection)=>collection.id !== collectionId),
+    changeItems = changeCollection.collection.find((item)=>item.id === id),
+    oldItems = changeCollection.collection.filter((item)=> item.id !== id)
 
-    if(otherCollectionValidate.some((collection)=>
-      collection.name.toLowerCase() === this.state.name.toLowerCase())){
-        this.setState({collectionExists: true})
-    }else if( this.state.name.length < 3){
-      this.setState({enterName: true, collectionExists:true})
-      
+    if(oldItems.some((item)=>item.name === name)){
+      this.setState({itemExists: true})
     }else{
-      newCollections =  {
-        name: this.state.name,
-        type: this.state.type,
-        description: this.state.description,
-        customInput1: this.state.customInput1 ? this.state.customInput1 : null,
-        customInput2: this.state.customInput2 ? this.state.customInput2 : null,
-        customInput3: this.state.customInput3 ? this.state.customInput3 : null,
-        collection:this.props.collection,
-        id: this.props.id
+      this.setState({itemExists: false})
+        changeItems = [{
+          name,
+          value,
+          description,
+          id: uuidv4(),
+          customInput1:[this.props.csInput1, customInput1], 
+          customInput2:[this.props.csInput2, customInput2],
+          customInput3:[this.props.csInput3, customInput3]
+        }]
+      }
+      if(oldItems.length > 0){
+        changeCollection.collection = changeItems.concat(oldItems)
+
+      }else{
+        changeCollection.collection = changeItems
+
+      }
+      if(oldCollection.length >0){
+        user.collections = [(changeCollection)].concat(oldCollection)
+      }else{
+        user.collections = [(changeCollection)]
       }
 
-    }
-    user.collections = otherCollectionValidate.concat(newCollections)
-    axios({
-      method: 'put',
-      url:'http://localhost:3030/user/',
-      withCredentials: true,
-      crossDomain: true,
-      data:({
-        user:user    
+      axios({
+        method: 'put',
+        url:'http://localhost:3030/user/',
+        withCredentials: true,
+        crossDomain: true,
+        data:({
+          user:user,
+        })
       })
-    })
-    this.props.handleClose()
-    this.props.modalClosed()
+      this.props.editModalClose()
   }
 
+  
   render(){
-    const {collectionExists, enterName, name, type, description, customInput} = this.state
-    let customInputs = customInput.map((input)=>(
-      <Form.Field 
-      control={Input} 
-      label={`customInput${input.num}`}
-      placeholder="Leave empty to not use" 
-
-      name={`customInput${input.num}`}
+    let {value, itemExists, name, description, customInput1, customInput2, customInput3} = this.state
+    let { csInput1, csInput2, csInput3 } = this.props
+    let custom1 = csInput1 !== null ?         
+    <Form.Field
+      control={Input}
+      error={itemExists}
+      label={csInput1}
+      name="customInput1"
       onChange={this.handleChange}
-      value= {input.num === 1 ? this.state.customInput1 : [input.num === 2 ? this.state.customInput2 : this.state.customInput3]}
-    />
-    ))
-
-
+      value={customInput1}
+    /> 
+  : ""
+  let custom2 = csInput2 !== null ?         
+    <Form.Field
+      control={Input}
+      error={itemExists}
+      label={csInput2}
+      name="customInput2"
+      onChange={this.handleChange}
+      value={customInput2}
+    /> 
+  : ""
+  let custom3 = csInput3 !== null ?         
+    <Form.Field
+    control={Input}
+    // error={ItemExists}
+    label={csInput3}
+    name="customInput3"
+    value={customInput3}
+    onChange={this.handleChange}
+    /> 
+  : ""
     return(
-      <Grid stackable centered >
-      <Grid.Row >
-        <Grid.Column width={4} />
-          <Grid.Column width={10} textAlign='center' >
-          <Segment raised>
-            <Divider hidden />
-            <Form onSubmit={this.handleSubmit}>
-              <Form.Field
-                control={Input}
-                error={collectionExists}
-                label="Name of Collection"
-                name="name"
-                value={name}
-                onChange={this.handleChange}
-              />  
-              <Label
-                pointing="above"
-                onClick={()=>{this.setState({collectionExists: !collectionExists})}}
-                content={enterName ? "You forgot to name your collection." : "This collection already exists!"}
-                style={{display: !collectionExists ? 'none':'' } }
-                color="red"
-              />        
-              <Form.Field
-                control={Input}
-                label="Type of Collection"
-                name="type"
-                value={type}
-                placeholder="music.. memorabilia.. shoes.."
-                onChange={this.handleChange}
-              />          
-              <Form.Field
-                control={TextArea}
-                label="Describe Your Collection!"
-                name="description"
-                placeholder="What kind of collection is it"
-                onChange={this.handleChange}
-                value={description}
-              />
-                {customInputs}
-              <Form.Field
-                control={Button}
-                content='Edit Collection'
-              />  
-          
-            </Form>
-            <Divider hidden />
-            </Segment>
-          </Grid.Column>
-          <Grid.Column width={3} />
-      </Grid.Row>
-      </Grid>
+      <Grid>
+        <Grid.Row>
+        <Grid.Column width={3} />
+        <Grid.Column width ={10}>
+      <Divider hidden />
+      <Form onSubmit={this.handleSubmit}>
+        <Form.Field
+          control={Input}
+          error={itemExists}
+          label="Name"
+          name="name"
+          onChange={this.handleChange}
+          value = {name}
+        />  
+        <Label
+          pointing="above"
+          onClick={()=>{this.setState({itemExists: !itemExists})}}
+          content="This collection already exists!"
+          style={{display: !itemExists ? 'none':'' } }
+          color="red"
+        />                
+        {custom1}
+        {custom2}
+        {custom3}
+
+        <Form.Group inline>
+          <label>Value</label>
+          <Form.Radio
+            label='Low'
+            value='Low'
+            checked={value === 'Low'}
+            onChange={this.handleRadioChange}
+          />
+          <Form.Radio
+            label='Medium'
+            value='Medium'
+            checked={value === 'Medium'}
+            onChange={this.handleRadioChange}
+          />
+          <Form.Radio
+            label='High'
+            value='High'
+            checked={value === 'High'}
+            onChange={this.handleRadioChange}
+          />
+        </Form.Group>
+
+        <Form.Field
+          control={TextArea}
+          label="Describe Your Item!"
+          name="description"
+          placeholder="What kind of collection is it"
+          onChange={this.handleChange}
+          value={description}
+        />
+        <Form.Field
+          control={Button}
+          content='Edit Item'
+          style={{display: !name.length > 0  ? 'none':'' } }
+        />          
+      </Form>
+    <Divider hidden />
+    </Grid.Column>
+    <Grid.Column width={3} />
+    </Grid.Row>
+    </Grid>
+    
     )
   }
-
 }
 
-export default EditCollectionForm
+export default EditItemForm

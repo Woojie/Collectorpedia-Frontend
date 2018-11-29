@@ -49,7 +49,8 @@ changeSelect = (e, {value}) => this.setState({selectedValue: value})
     csInput1 = {customInput1}
     csInput2 = {customInput2}
     csInput3 = {customInput3}
-
+    user={user}
+    modalClosed = {this.props.modalClosed}
      />
     )
 
@@ -65,6 +66,8 @@ changeSelect = (e, {value}) => this.setState({selectedValue: value})
     csInput1 = {customInput1}
     csInput2 = {customInput2}
     csInput3 = {customInput3}
+    user={user}
+    modalClosed = {this.props.modalClosed}
      />)
 
   }else{

@@ -2,20 +2,29 @@ import React, {Component} from 'react'
 import { Image, Item, Label, Modal, Button, Icon} from 'semantic-ui-react'
 import './individualItem.css'
 import Camera from './Camera/index'
-import uuidv4 from 'uuid/v4'
+import ImageCarousel from './ImageCarousel'
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import EditItem from './EditItem'
+import uuidv4 from 'uuid/v4'
 
 class IndivdualItem extends Component{
   state = {
-    cameraOn: false
+    cameraOn: false,
+    editModal: false
   }
   handleCameraClick = () => {
     this.setState({cameraOn: !this.state.cameraOn})
   }
+
+  editModalOpen = () => {this.setState({editModal: true})}
+  editModalClose = () => {
+    this.setState({editModal: false}, ()=>{
+      this.props.modalClosed()
+    })}
   render(){
-  const {collection:{name, description, value, id, customInput1, customInput2, customInput3, image}, userId, handleItemDelete, collectionId, csInput1, csInput2, csInput3} = this.props
-  
+  const {collection:{name, description, value, id, customInput1, customInput2, customInput3, image}, user, userId, handleItemDelete, collectionId, csInput1, csInput2, csInput3} = this.props
+
   let itemDescription = description ? <p><b>Description: </b>{description}</p>: ""
   let itemValue = value ? <p><b>Value: </b>{value}</p>  : ""
   let itemCustomInput1 = customInput1[0] !== null ? <p><b>{csInput1}</b>: {customInput1[1]}</p> : ""
@@ -24,8 +33,8 @@ class IndivdualItem extends Component{
 
   let itemImages =  image === undefined ? <Image src='/images/sample.png' /> : [image.length === 1 ? 
     <Image centered rounded id="shadow-image" src={image[0]} /> 
-    : <Carousel emulateTouch showStatus={true} showThumbs={false} swipeable={true} width="10em" >
-    {image.map((img)=><img id='responsive' alt='/images/sample.png' src={img} key={uuidv4()}/>)}
+    : <Carousel emulateTouch showStatus={true}  showThumbs={false} swipeable={true} width="10em" >
+    {image.map((img, i)=><ImageCarousel key={uuidv4()} img={img}/>)}
     </Carousel>
     ]
 
@@ -34,15 +43,13 @@ class IndivdualItem extends Component{
     display: this.state.cameraOn ? "none" : "block"
   }
   const backgroundColor ={
-    backgroundColor: "red"
+    backgroundColor: "whitesmoke"
   }
 
   return(
     <Item id="shadow-item">
       <Item.Image size='small' >
-        
             {itemImages}
-
         </Item.Image>
         <Item.Content id="betterMargins">
         <Label.Group id="labelPosition"> 
@@ -63,10 +70,37 @@ class IndivdualItem extends Component{
             {camera}
           </Modal.Content>
         </Modal>
-
+        <Modal style={backgroundColor} trigger={
+        <Label size="mini" as="a"  onClick={this.editModalOpen} >
+          <Icon name="edit outline" />
+        </Label>}
+        open={this.state.editModal}
+        onClose={this.editModalClose}
+        >
+        <Modal.Header content={`Edit ${name}`} />
+        <Modal.Description>
+          <EditItem 
+            name={name}
+            value={value}
+            description = {description}
+            id={id}
+            customInput1={customInput1}
+            customInput2={customInput2}
+            customInput3={customInput3}
+            image={image}
+            collectionId={collectionId}
+            csInput1={csInput1}
+            csInput2={csInput2}
+            csInput3={csInput3}
+            editModalClose={this.editModalClose}
+            user={user}
+          />
+        </Modal.Description>
+        </Modal>
         <Label size="mini" as="a"  onClick={()=>handleItemDelete(id, collectionId )} >
           <Icon name="times" color="red" />
         </Label>
+
         </Label.Group>
               <Item.Header  as='h3'>
                 {name}

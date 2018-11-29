@@ -5,7 +5,7 @@ import {Form, Input, Grid, Message, Header} from 'semantic-ui-react'
 
 
 class LoginForm extends Component {
-  _isMounted = false
+  _isMounted =false
   state = {
     username: '',
     password: '',
@@ -19,6 +19,12 @@ class LoginForm extends Component {
     })
   }
 
+  componentDidMount() {
+   this._isMounted = true
+  }
+componentWillUnmount() {
+  this._isMounted = false
+} 
 
 
   handleSubmit = (event) => {

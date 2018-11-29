@@ -53,7 +53,7 @@ handleDelete = (id) => {
     })
   })
   .then(
-    this.setState({userData: user})
+    this.setState({userData: user}, ()=>{window.location.reload()})
   )
 }
 
@@ -180,6 +180,7 @@ render(){
               user={userData} 
               handleItemDelete={this.handleItemDelete} 
               handleAddImage={this.handleAddImage}
+              modalClosed = {this.modalClosed}
             />
           } 
           />
