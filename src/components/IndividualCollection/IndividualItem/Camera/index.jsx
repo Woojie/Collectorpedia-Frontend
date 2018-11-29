@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {GrabCamera} from './GrabCamera';
 import axios from 'axios';
-import { Button} from 'semantic-ui-react'
+import { Button, Grid, Dimmer, Loader} from 'semantic-ui-react'
 
 class Camera extends Component {
   constructor() {
@@ -34,7 +34,7 @@ class Camera extends Component {
   captureImage = async() => {
     const capturedData = this
       .webcam
-      .takeBase64Photo({type: 'jpeg', quality: 3});
+      .takeBase64Photo({type: 'jpeg', quality: 10});
     this.setState({captured: true, capturedImage: capturedData.base64});
   }
 
@@ -123,23 +123,28 @@ class Camera extends Component {
           </div>
 
     const uploading = this.state.uploading
-      ? <div>
-          <p>
-              Uploading Image, please wait ...
-          </p>
-        </div>
+      ?
+              <Dimmer active><Loader /></Dimmer>
       : <span/>
 
     return (
-      <div>
-        {uploading}
-        <video autoPlay playsInline muted id="webcam" width="100%" height="200"/>
-        <br/>
-        <div className="imageCanvas">
-          {imageDisplay}
-        </div>
-        {buttons}
-      </div>
+
+        <Grid stackable>
+        <Grid.Row>
+          <Grid.Column width={3} />
+          <Grid.Column width={10}>
+            {uploading}
+            <video autoPlay playsInline muted id="webcam" width="100%" height="200"/>
+            <br/>
+            <div className="imageCanvas">
+              {imageDisplay}
+            </div>
+            {buttons}
+            </Grid.Column>
+            <Grid.Column width={3} />
+        </Grid.Row>
+        </Grid>
+
     )
   }
 

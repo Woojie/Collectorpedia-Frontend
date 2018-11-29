@@ -6,6 +6,8 @@ import {Menu, Segment, Image, Header } from 'semantic-ui-react'
 
 
 const Navbar = ({logout, loggedIn, username}) => {
+    let welcome = username === null ? ""      
+    : <Header as='h2' inverted content={`${username}'s Collection`} />
 
     return (
 
@@ -16,7 +18,7 @@ const Navbar = ({logout, loggedIn, username}) => {
             <Image src="/images/logo.png"  />
           </Menu.Item>
           <Menu.Item>
-            <Header as='h2' inverted content={`${username}'s Collection`} />
+          {welcome}
           </Menu.Item>
           <Menu.Item as='label' name='logout' onClick={logout} position='right' >
             <Link to='/'>
