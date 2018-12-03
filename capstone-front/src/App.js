@@ -42,13 +42,13 @@ class App extends Component {
       .then(response => {
 
       if (response.data.user) {
-        console.log('Get User: There is a user saved in the server session: ')
+
         this.setState({
           loggedIn: true,
           username: response.data.user.username,
         })
       } else {
-        console.log('Get user: no user');
+
         this.setState({
           loggedIn: false,
           username: null
@@ -66,7 +66,7 @@ class App extends Component {
       crossDomain: true,
     })  
     .then(response => {
-      console.log(response.data)
+
       if (response.status === 200) {
         this.updateUser({
           loggedIn: false,
