@@ -18,37 +18,41 @@ class CreateCollectionForm extends Component {
   handleChange = (e) =>{this.setState({[e.target.name]:e.target.value})}
 
   handleSubmit = (e) =>{
+    let {customInput1, customInput2, customInput3, name, type, description} = this.state
     let user = this.props.userData
     let newCollections
+
     if(user.collections.some((collection)=>
-      collection.name.toLowerCase() === this.state.name.toLowerCase())){
+      collection.name.toLowerCase() === name.toLowerCase())){
         this.setState({collectionExists: true})
-    }else if( this.state.name.length < 3){
-      this.setState({enterName: true, collectionExists:true})
+    }else if( name.length < 3){
+      this.setState({
+        enterName: true, 
+        collectionExists:true
+      })
       
     }else{
-
     if (user.collections === undefined){
 
       newCollections = {
-        name: this.state.name,
-        type: this.state.type,
-        description: this.state.description,
+        name,
+        type,
+        description,
         collection: [],
-        customInput1: this.state.customInput1 ? this.state.customInput1 : null,
-        customInput2: this.state.customInput2 ? this.state.customInput2 : null,
-        customInput3: this.state.customInput3 ? this.state.customInput3 : null,
+        customInput1: customInput1 ? customInput1 : null,
+        customInput2: customInput2 ? customInput2 : null,
+        customInput3: customInput3 ? customInput3 : null,
         id: uuidv4()
       }
     }else{
       let addCollection =  {
-        name: this.state.name,
-        type: this.state.type,
-        description: this.state.description,
+        name,
+        type,
+        description,
         collection: [],
-        customInput1: this.state.customInput1 ? this.state.customInput1 : null,
-        customInput2: this.state.customInput2 ? this.state.customInput2 : null,
-        customInput3: this.state.customInput3 ? this.state.customInput3 : null,
+        customInput1: customInput1 ? customInput1 : null,
+        customInput2: customInput2 ? customInput2 : null,
+        customInput3: customInput3 ?customInput3 : null,
         id:uuidv4()
       }
     newCollections = user.collections.concat(addCollection)

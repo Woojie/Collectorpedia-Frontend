@@ -39,16 +39,13 @@ class App extends Component {
       withCredentials: true,
       crossDomain: true,
     })
-      .then(response => {
-
+    .then(response => {
       if (response.data.user) {
-
         this.setState({
           loggedIn: true,
           username: response.data.user.username,
         })
       } else {
-
         this.setState({
           loggedIn: false,
           username: null
