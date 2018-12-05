@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Grid, Header, Divider, List, Button, Icon, Modal, Card, Item, Label, Dropdown} from 'semantic-ui-react'
-import AddItemForm from '../AddItemForm'
+import AddItemForm from './IndividualItem/AddItemForm'
 import IndividualItem from './IndividualItem/IndividualItem'
 import IndividualCard from './IndividualItem/IndividualCard'
 import IndividualList from './IndividualItem/IndividualList'

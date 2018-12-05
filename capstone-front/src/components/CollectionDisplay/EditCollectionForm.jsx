@@ -16,31 +16,31 @@ class EditCollectionForm extends Component {
   }
 
   componentDidMount(){
+    let {customInput1, customInput2, customInput3, name, type, description} = this.props
 
     this.setState({
-      customInput1: this.props.customInput1,
-      customInput2: this.props.customInput2,
-      customInput3: this.props.customInput3,
-      name: this.props.name,
-      type: this.props.type,
-      description: this.props.description,
+      customInput1,
+      customInput2,
+      customInput3,
+      name,
+      type,
+      description,
     }, ()=>{
       let customNumber=0
       let customInput = [{num:1}, {num:2}, {num:3}]
-      if(this.props.customInput1 !== null){
+
+      if(customInput1 !== null){
         customNumber =1      
       }
-      if(this.props.customInput2 !== null){
+      if(customInput2 !== null){
         customNumber = 2       
       }
-      if(this.props.customInput3 !== null){
+      if(customInput3 !== null){
         customNumber = 3
       }
-  
       this.setState({
-        customInput: customInput,
+        customInput,
         customNumber,
-
       })
 
     })
@@ -51,25 +51,25 @@ class EditCollectionForm extends Component {
     this.setState({[e.target.name]:e.target.value})}
 
   handleSubmit = (e) =>{
-
+    let {customInput1, customInput2, customInput3, name, type, description} = this.state
     let user = this.props.user
     let otherCollectionValidate = user.collections.filter((collection)=>collection.name.toLowerCase() !== this.props.name.toLowerCase())
     let newCollections
 
     if(otherCollectionValidate.some((collection)=>
-      collection.name.toLowerCase() === this.state.name.toLowerCase())){
+      collection.name.toLowerCase() === name.toLowerCase())){
         this.setState({collectionExists: true})
-    }else if( this.state.name.length < 3){
+    }else if( name.length < 3){
       this.setState({enterName: true, collectionExists:true})
       
     }else{
       newCollections =  {
-        name: this.state.name,
-        type: this.state.type,
-        description: this.state.description,
-        customInput1: this.state.customInput1 ? this.state.customInput1 : null,
-        customInput2: this.state.customInput2 ? this.state.customInput2 : null,
-        customInput3: this.state.customInput3 ? this.state.customInput3 : null,
+        name,
+        type,
+        description,
+        customInput1: customInput1 ? customInput1 : null,
+        customInput2: customInput2 ? customInput2 : null,
+        customInput3: customInput3 ? customInput3 : null,
         collection:this.props.collection,
         id: this.props.id
       }
@@ -91,7 +91,7 @@ class EditCollectionForm extends Component {
   }
 
   render(){
-    const {collectionExists, enterName, name, type, description, customInput} = this.state
+    const {collectionExists, enterName, name, type, description, customInput, customInput1, customInput2, customInput3} = this.state
     let customInputs = customInput.map((input)=>(
       <Form.Field 
       control={Input} 
@@ -100,7 +100,7 @@ class EditCollectionForm extends Component {
 
       name={`customInput${input.num}`}
       onChange={this.handleChange}
-      value= {input.num === 1 ? this.state.customInput1 : [input.num === 2 ? this.state.customInput2 : this.state.customInput3]}
+      value= {input.num === 1 ? customInput1 : [input.num === 2 ? customInput2 : customInput3]}
     />
     ))
 

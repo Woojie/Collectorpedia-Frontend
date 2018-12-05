@@ -146,7 +146,6 @@ render(){
   }
   return(
     this.state.loader ? <Dimmer active><Loader>Loading</Loader></Dimmer> :(
-    <div>
       <Grid stackable centered>
         <Grid.Row>
           <Grid.Column width={1} />
@@ -187,7 +186,6 @@ render(){
           </Grid.Column>
         </Grid.Row>
       </Grid>
-    </div>
     )
   )
 }
